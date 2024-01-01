@@ -1,62 +1,127 @@
 #include <NeoPixelBus.h>
 
 #define PIXELSPIN   6
-#define NUMPIXELS   87
-float color[3];
+#define NUMPIXELS   8
+int StartShow = 0;
+int EndShow = 10;
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod>* pixels = NULL;
 
 unsigned long pixelsInterval = 50; // the time we need to wait
+unsigned long ShowInterval = 60000; // show time in millis
 unsigned long colorWipePreviousMillis = 0;
 unsigned long theaterChasePreviousMillis = 0;
 unsigned long theaterChaseRainbowPreviousMillis = 0;
 unsigned long rainbowPreviousMillis = 0;
 unsigned long rainbowCyclesPreviousMillis = 0;
+unsigned long ShowPreviousMillis = 0;
 
 int theaterChaseQ = 0;
 int theaterChaseRainbowQ = 0;
 int theaterChaseRainbowCycles = 0;
 int rainbowCycles = 0;
 int rainbowCycleCycles = 0;
+int Showcount = 0;
 
 uint16_t currentPixel = 0;// what pixel are we operating on
 
+float color[3];
+RgbColor red = RgbColor(255, 0, 0);
+RgbColor green = RgbColor(0, 255, 0);
+RgbColor blue = RgbColor(0, 0, 255);
+RgbColor white = RgbColor(255);
+RgbColor black = RgbColor(0);
+
 void setup() {
-  pixels = new NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod>(NUMPIXELS, PIXELSPIN);
+  pixels = new NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod>(NUMPIXELS);
   currentPixel = 0;
+  Showcount = StartShow;
 
   pixels->Begin(); // This initializes the NeoPixel library.
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels->SetPixelColor(i, black);
+  }
   pixels->Show(); // This sends the updated pixel color to the hardware.
 
 }
 
 void loop () {
-
-  if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
-    colorWipePreviousMillis = millis();
-    colorWipe(RgbColor(0, 255, 125));
+  if ((unsigned long)(millis() - ShowPreviousMillis) >= ShowInterval) {
+    ShowPreviousMillis = millis();
+    Showcount++;
+    if (Showcount > EndShow || Showcount < StartShow) {
+      Showcount = StartShow;
+    }
   }
 
-  if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
-    theaterChasePreviousMillis = millis();
-    theaterChase(RgbColor(0, 255, 0)); // White
-  }
+  switch (Showcount) {
+    case 0:
+      if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
+        colorWipePreviousMillis = millis();
+        colorWipe(red);
+      }
+      break;
+    case 1:
+      if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
+        colorWipePreviousMillis = millis();
+        colorWipe(green);
+      }
+      break;
+    case 2:
+      if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
+        colorWipePreviousMillis = millis();
+        colorWipe(blue);
+      }
+      break;
+    case 3:
+      if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
+        colorWipePreviousMillis = millis();
+        colorWipe(white);
+      }
+      break;
+    case 4:
+      if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
+        theaterChasePreviousMillis = millis();
+        theaterChase(red); // Red
+      }
+      break;
+    case 5:
+      if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
+        theaterChasePreviousMillis = millis();
+        theaterChase(green); // Green
+      }
+      break;
+    case 6:
+      if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
+        theaterChasePreviousMillis = millis();
+        theaterChase(blue); // Blue
+      }
+      break;
+    case 7:
+      if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
+        theaterChasePreviousMillis = millis();
+        theaterChase(white); // White
+      }
+      break;
+    case 8:
+      if ((unsigned long)(millis() - theaterChaseRainbowPreviousMillis) >= pixelsInterval) {
+        theaterChaseRainbowPreviousMillis = millis();
+        theaterChaseRainbow();
+      }
+      break;
+    case 9:
+      if ((unsigned long)(millis() - rainbowPreviousMillis) >= pixelsInterval) {
+        rainbowPreviousMillis = millis();
+        rainbow();
+      }
+      break;
+    case 10:
+      if ((unsigned long)(millis() - rainbowCyclesPreviousMillis) >= pixelsInterval) {
+        rainbowCyclesPreviousMillis = millis();
+        rainbowCycle();
+      }
 
-  if ((unsigned long)(millis() - theaterChaseRainbowPreviousMillis) >= pixelsInterval) {
-    theaterChaseRainbowPreviousMillis = millis();
-    theaterChaseRainbow();
   }
-
-  if ((unsigned long)(millis() - rainbowPreviousMillis) >= pixelsInterval) {
-    rainbowPreviousMillis = millis();
-    rainbow();
-  }
-
-  if ((unsigned long)(millis() - rainbowCyclesPreviousMillis) >= pixelsInterval) {
-    rainbowCyclesPreviousMillis = millis();
-    rainbowCycle();
-  }
-
 }
 
 // Fill the dots one after the other with a color
