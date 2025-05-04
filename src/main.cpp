@@ -262,7 +262,7 @@ void loop() {
 	case 1:
 		if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
 			theaterChasePreviousMillis = millis();
-			theaterChase(currentColor); // Red
+			theaterChase(currentColor);
 		}
 		break;
 	case 2:
@@ -282,9 +282,6 @@ void loop() {
 			rainbowCyclesPreviousMillis = millis();
 			rainbowCycle();
 		}
-		break;
-	case 5:
-		setSolidColor(currentColor);
 		break;
 	default:
 		break;
@@ -361,7 +358,7 @@ void setBrightness(uint8_t value) {
 }
 
 void setAutoplay(uint8_t value) {
-	autoplay = value == 0 ? 0 : 1;
+	autoplay = value;
 
 	LOG_DEBUG("setAutoplay:", autoplay);
 }
@@ -373,19 +370,6 @@ void setColor(RgbColor c) {
 		(uint8_t)((c.G * brightness) / 255),
 		(uint8_t)((c.B * brightness) / 255)
 	);
-}
-
-void setSolidColor(RgbColor c) {
-	bool needsUpdate = false;
-	for (int i = 0; i < NUMPIXELS; i++) {
-		if (pixels->GetPixelColor(i) != c) {
-			pixels->SetPixelColor(i, c);
-			needsUpdate = true;
-		}
-	}
-	if (needsUpdate) {
-		pixels->Show();
-	}
 }
 
 // Fill the dots one after the other with a color
