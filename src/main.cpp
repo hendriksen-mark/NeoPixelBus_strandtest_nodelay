@@ -4,23 +4,23 @@
 #include "variables.h"
 
 #if defined(IR_enable)
-  #include <IRremoteESP8266.h>
-  #include <IRrecv.h>
-  #include <IRutils.h>
-  IRrecv irReceiver(RECV_PIN);
-  #include "Commands.h"
+#include <IRremoteESP8266.h>
+#include <IRrecv.h>
+#include <IRutils.h>
+IRrecv irReceiver(RECV_PIN);
+#include "Commands.h"
 #endif
 
 #if defined(IR_enable)
 void handleIrInput()
 {
-  InputCommand command = readCommand(defaultHoldDelay);
+	InputCommand command = readCommand(defaultHoldDelay);
 
-  if (command != InputCommand::None) {
-	LOG_DEBUG("command:", (int) command);
-  }
+	if (command != InputCommand::None) {
+		LOG_DEBUG("command:", (int)command);
+	}
 
-  switch (command) {
+	switch (command) {
 	case InputCommand::RedUp:
 	case InputCommand::GreenUp:
 	case InputCommand::BlueUp:
@@ -29,203 +29,207 @@ void handleIrInput()
 	case InputCommand::BlueDown:
 	case InputCommand::None: {
 		break;
-	  }
+	}
 	case InputCommand::Palette: {
 		setPattern(random(EndShow));
 		break;
-	  }
+	}
 	case InputCommand::Up: {
 		adjustPattern(true);
 		break;
-	  }
+	}
 	case InputCommand::Down: {
 		adjustPattern(false);
 		break;
-	  }
+	}
 	case InputCommand::Left: {
 		adjustSpeed(false);
 		break;
-	  }
+	}
 	case InputCommand::Right: {
 		adjustSpeed(true);
 		break;
-	  }
+	}
 	case InputCommand::Power: {
 		setPower(power == 0 ? 1 : 0);
 		break;
-	  }
+	}
 	case InputCommand::PowerOn: {
 		setPower(1);
 		break;
-	  }
+	}
 	case InputCommand::PowerOff: {
 		setPower(0);
 		break;
-	  }
+	}
 	case InputCommand::BrightnessUp: {
 		adjustBrightness(true);
 		break;
-	  }
+	}
 	case InputCommand::BrightnessDown: {
 		adjustBrightness(false);
 		break;
-	  }
+	}
 	case InputCommand::Brightness: {
 		adjustBrightness(true);
 		break;
-	  }
+	}
 	case InputCommand::Select: {
 		setBrightness(random(255));
 		break;
-	  }
+	}
 	case InputCommand::PlayMode: {  //toggle pause/play
 		setAutoplay(!autoplay);
 		break;
-	  }
+	}
 
-	 //pattern buttons
+							   //pattern buttons
 
 	case InputCommand::Pattern1: {
 		setPattern(0);
 		break;
-	  }
+	}
 	case InputCommand::Pattern2: {
 		setPattern(1);
 		break;
-	  }
+	}
 	case InputCommand::Pattern3: {
 		setPattern(2);
 		break;
-	  }
+	}
 	case InputCommand::Pattern4: {
 		setPattern(3);
 		break;
-	  }
+	}
 	case InputCommand::Pattern5: {
 		setPattern(4);
 		break;
-	  }
+	}
 	case InputCommand::Pattern6: {
 		setPattern(5);
 		break;
-	  }
+	}
 	case InputCommand::Pattern7: {
 		setPattern(6);
 		break;
-	  }
+	}
 	case InputCommand::Pattern8: {
 		setPattern(7);
 		break;
-	  }
+	}
 	case InputCommand::Pattern9: {
 		setPattern(8);
 		break;
-	  }
+	}
 	case InputCommand::Pattern10: {
 		setPattern(9);
 		break;
-	  }
+	}
 	case InputCommand::Pattern11: {
 		setPattern(10);
 		break;
-	  }
+	}
 	case InputCommand::Pattern12: {
 		setPattern(11);
 		break;
-	  }
+	}
 
-	// color buttons
+								// color buttons
 
 	case InputCommand::Red: {
 		setColor(Red);
 		break;
-	  }
+	}
 	case InputCommand::RedOrange: {
 		setColor(OrangeRed);
 		break;
-	  }
+	}
 	case InputCommand::Orange: {
 		setColor(Orange);
 		break;
-	  }
+	}
 	case InputCommand::YellowOrange: {
 		setColor(Goldenrod);
 		break;
-	  }
+	}
 	case InputCommand::Yellow: {
 		setColor(Yellow);
 		break;
-	  }
+	}
 
 	case InputCommand::Green: {
 		setColor(Green);
 		break;
-	  }
+	}
 	case InputCommand::Lime: {
 		setColor(Lime);
 		break;
-	  }
+	}
 	case InputCommand::Aqua: {
 		setColor(Aqua);
 		break;
-	  }
+	}
 	case InputCommand::Teal: {
 		setColor(Teal);
 		break;
-	  }
+	}
 	case InputCommand::Navy: {
 		setColor(Navy);
 		break;
-	  }
+	}
 
 	case InputCommand::Blue: {
 		setColor(Blue);
 		break;
-	  }
+	}
 	case InputCommand::RoyalBlue: {
 		setColor(RoyalBlue);
 		break;
-	  }
+	}
 	case InputCommand::Purple: {
 		setColor(Purple);
 		break;
-	  }
+	}
 	case InputCommand::Indigo: {
 		setColor(Indigo);
 		break;
-	  }
+	}
 	case InputCommand::Magenta: {
 		setColor(Magenta);
 		break;
-	  }
+	}
 
 	case InputCommand::White: {
 		setColor(White);
 		break;
-	  }
+	}
 	case InputCommand::Pink: {
 		setColor(Pink);
 		break;
-	  }
+	}
 	case InputCommand::LightPink: {
 		setColor(LightPink);
 		break;
-	  }
+	}
 	case InputCommand::BabyBlue: {
 		setColor(CornflowerBlue);
 		break;
-	  }
+	}
 	case InputCommand::LightBlue: {
 		setColor(LightBlue);
 		break;
-	  }
-  }
+	}
+	}
 }
 #endif
 
 void setup() {
 	Serial.begin(115200);
+#if defined(ESP8266)
+	pixels = new NeoPixelBus<COLOR_ORDER, LED_TYPE>(NUMPIXELS);
+#elif defined(ESP32)
 	pixels = new NeoPixelBus<COLOR_ORDER, LED_TYPE>(NUMPIXELS, PIXELSPIN);
+#endif
 	currentPixel = 0;
 	Showcount = StartShow;
 
@@ -236,7 +240,7 @@ void setup() {
 	pixels->Show(); // This sends the updated pixel color to the hardware.
 	Serial.println("Showcount = " + String(Showcount));
 #if defined(IR_enable)
-  irReceiver.enableIRIn(); // Start the receiver
+	irReceiver.enableIRIn(); // Start the receiver
 #endif
 }
 
@@ -257,115 +261,115 @@ void loop() {
 	}
 
 	switch (Showcount) {
-		case 0:
-			if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
-				colorWipePreviousMillis = millis();
-				colorWipe(currentColor);
-			}
-			break;
-		case 1:
-			if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
-				theaterChasePreviousMillis = millis();
-				theaterChase(currentColor); // Red
-			}
-			break;
-		case 2:
-			if ((unsigned long)(millis() - theaterChaseRainbowPreviousMillis) >= pixelsInterval) {
-				theaterChaseRainbowPreviousMillis = millis();
-				theaterChaseRainbow();
-			}
-			break;
-		case 3:
-			if ((unsigned long)(millis() - rainbowPreviousMillis) >= pixelsInterval) {
-				rainbowPreviousMillis = millis();
-				rainbow();
-			}
-			break;
-		case 4:
-			if ((unsigned long)(millis() - rainbowCyclesPreviousMillis) >= pixelsInterval) {
-				rainbowCyclesPreviousMillis = millis();
-				rainbowCycle();
-			}
-			break;
-		case 5:
-			setSolidColor(currentColor);
-			break;
-		default:
-			break;
+	case 0:
+		if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
+			colorWipePreviousMillis = millis();
+			colorWipe(currentColor);
+		}
+		break;
+	case 1:
+		if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
+			theaterChasePreviousMillis = millis();
+			theaterChase(currentColor); // Red
+		}
+		break;
+	case 2:
+		if ((unsigned long)(millis() - theaterChaseRainbowPreviousMillis) >= pixelsInterval) {
+			theaterChaseRainbowPreviousMillis = millis();
+			theaterChaseRainbow();
+		}
+		break;
+	case 3:
+		if ((unsigned long)(millis() - rainbowPreviousMillis) >= pixelsInterval) {
+			rainbowPreviousMillis = millis();
+			rainbow();
+		}
+		break;
+	case 4:
+		if ((unsigned long)(millis() - rainbowCyclesPreviousMillis) >= pixelsInterval) {
+			rainbowCyclesPreviousMillis = millis();
+			rainbowCycle();
+		}
+		break;
+	case 5:
+		setSolidColor(currentColor);
+		break;
+	default:
+		break;
 	}
 }
 
 void setPattern(uint8_t value) {
-  if (value >= EndShow)
-	value = EndShow - 1;
+	if (value >= EndShow)
+		value = EndShow - 1;
 
-  LOG_DEBUG("setPattern:", value);
-  Showcount = value;
+	LOG_DEBUG("setPattern:", value);
+	Showcount = value;
 }
 
 void adjustPattern(bool up) {
-  if (up)
-  	Showcount++;
-  else
-  	Showcount--;
+	if (up)
+		Showcount++;
+	else
+		Showcount--;
 
-  // wrap around at the ends
-  if (Showcount < 0)
-  	Showcount = EndShow;
-  if (Showcount >= EndShow)
-  	Showcount = 0;
+	// wrap around at the ends
+	if (Showcount < 0)
+		Showcount = EndShow;
+	if (Showcount >= EndShow)
+		Showcount = 0;
 
-  LOG_DEBUG("adjustPattern:", Showcount);
+	LOG_DEBUG("adjustPattern:", Showcount);
 }
 
 void adjustSpeed(bool up) {
-  if (up)
-  	pixelsInterval++;
-  else
-  	pixelsInterval--;
+	if (up)
+		pixelsInterval++;
+	else
+		pixelsInterval--;
 
-  // wrap around at the ends
-  if (pixelsInterval < 0)
-	pixelsInterval = 0;
-  if (pixelsInterval >= 255)
-	pixelsInterval = 255;
-  
-  LOG_DEBUG("adjustSpeed:", pixelsInterval);
+	// wrap around at the ends
+	if (pixelsInterval < 0)
+		pixelsInterval = 0;
+	if (pixelsInterval >= 255)
+		pixelsInterval = 255;
+
+	LOG_DEBUG("adjustSpeed:", pixelsInterval);
 }
 
 void setPower(uint8_t value) {
-  power = value == 0 ? 0 : 1;
+	power = value == 0 ? 0 : 1;
 
-  LOG_DEBUG("setPower:", power);
+	LOG_DEBUG("setPower:", power);
 }
 
 void adjustBrightness(bool up) {
-  if (up)
-	brightness++;
-  else
-	brightness--;
-	
-  if (brightness < 0)
-	brightness = 0;
-  else if (brightness > 255)
-	brightness = 255;
+	if (up)
+		brightness++;
+	else
+		brightness--;
 
-  LOG_DEBUG("adjustBrightness:", brightness);
+	if (brightness < 0)
+		brightness = 0;
+	else if (brightness > 255)
+		brightness = 255;
+
+	LOG_DEBUG("adjustBrightness:", brightness);
 }
 
 void setBrightness(uint8_t value) {
-  if (value > 255)
-	value = 255;
-  else if (value < 0) value = 0;
+	if (value > 255)
+		value = 255;
+	else if (value < 0) value = 0;
 
-  brightness = value;
-  LOG_DEBUG("setBrightness:", brightness);
+	brightness = value;
+	LOG_DEBUG("setBrightness:", brightness);
 }
 
 void setAutoplay(uint8_t value) {
-  autoplay = value == 0 ? 0 : 1;
+	autoplay = value == 0 ? 0 : 1;
 
-  LOG_DEBUG("setAutoplay:", autoplay);
+	LOG_DEBUG("setAutoplay:", autoplay);
 }
 
 void setColor(RgbColor c) {
@@ -440,7 +444,7 @@ void theaterChase(RgbColor c) {
 //Theatre-style crawling lights with rainbow effect
 void theaterChaseRainbow() {
 	for (int i = 0; i < NUMPIXELS; i = i + 3) {
-		pixels->SetPixelColor(i + theaterChaseRainbowQ, Wheel( (i + theaterChaseRainbowCycles) % 255)); //turn every third pixel on
+		pixels->SetPixelColor(i + theaterChaseRainbowQ, Wheel((i + theaterChaseRainbowCycles) % 255)); //turn every third pixel on
 	}
 
 	pixels->Show();

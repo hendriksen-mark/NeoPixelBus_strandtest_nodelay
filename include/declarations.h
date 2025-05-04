@@ -2,6 +2,7 @@
 #ifndef DECLARATIONS_H
 #define DECLARATIONS_H
 
+#include "Arduino.h"
 #include <NeoPixelBus.h>
 
 // Variable declarations

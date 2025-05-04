@@ -1,4 +1,5 @@
 #pragma once
+#include "Arduino.h"
 #include "declarations.h"
 #include "user_info.h"
 
