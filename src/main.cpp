@@ -2,16 +2,12 @@
 #include <NeoPixelBus.h>
 #include <DebugLog.h>
 #include "variables.h"
-
-#if defined(IR_enable)
 #include <IRremoteESP8266.h>
 #include <IRrecv.h>
 #include <IRutils.h>
 IRrecv irReceiver(RECV_PIN);
 #include "Commands.h"
-#endif
 
-#if defined(IR_enable)
 void handleIrInput()
 {
 	InputCommand command = readCommand(defaultHoldDelay);
@@ -221,7 +217,7 @@ void handleIrInput()
 	}
 	}
 }
-#endif
+
 
 void setup() {
 	Serial.begin(115200);
@@ -239,15 +235,11 @@ void setup() {
 	}
 	pixels->Show(); // This sends the updated pixel color to the hardware.
 	Serial.println("Showcount = " + String(Showcount));
-#if defined(IR_enable)
 	irReceiver.enableIRIn(); // Start the receiver
-#endif
 }
 
 void loop() {
-#if defined(IR_enable)
 	handleIrInput();
-#endif
 	if (power == 0) {
 		pixels->ClearTo(Black);
 		pixels->Show();
@@ -300,6 +292,7 @@ void loop() {
 }
 
 void setPattern(uint8_t value) {
+	setAutoplay(0);
 	if (value >= EndShow)
 		value = EndShow - 1;
 
@@ -308,6 +301,7 @@ void setPattern(uint8_t value) {
 }
 
 void adjustPattern(bool up) {
+	setAutoplay(0);
 	if (up)
 		Showcount++;
 	else

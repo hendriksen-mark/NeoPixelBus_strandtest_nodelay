@@ -22,9 +22,6 @@ const char* password = "";
 #define RECV_PIN	5  // pin for ir rec
 #endif
 
-// uncomment to enable IRremote
-#define IR_enable
-
 // ten seconds per color palette makes a good demo
 // 20-120 is better for deployment
 uint8_t secondsPerPalette = 10;
