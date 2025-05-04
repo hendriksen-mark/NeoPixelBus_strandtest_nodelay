@@ -57,7 +57,6 @@ void rainbow();
 void rainbowCycle();
 void theaterChase(RgbColor);
 void theaterChaseRainbow();
-void setSolidColor(RgbColor);
 RgbColor Wheel(byte);
 void setPattern(uint8_t);
 void adjustPattern(bool);
