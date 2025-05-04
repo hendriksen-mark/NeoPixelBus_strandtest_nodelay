@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <NeoPixelBus.h>
 
 #define PIXELSPIN   6
@@ -32,6 +33,14 @@ RgbColor blue = RgbColor(0, 0, 255);
 RgbColor white = RgbColor(255);
 RgbColor black = RgbColor(0);
 
+// put function declarations here:
+void colorWipe(RgbColor);
+void rainbow();
+void rainbowCycle();
+void theaterChase(RgbColor);
+void theaterChaseRainbow();
+RgbColor Wheel(byte);
+
 void setup() {
 	Serial.begin(115200);
 	pixels = new NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod>(NUMPIXELS, PIXELSPIN);
@@ -44,10 +53,9 @@ void setup() {
 	}
 	pixels->Show(); // This sends the updated pixel color to the hardware.
 	Serial.println("Showcount = " + String(Showcount));
-
 }
 
-void loop () {
+void loop() {
 	if ((unsigned long)(millis() - ShowPreviousMillis) >= ShowInterval) {
 		ShowPreviousMillis = millis();
 		Showcount++;
