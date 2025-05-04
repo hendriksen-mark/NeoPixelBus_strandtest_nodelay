@@ -3,7 +3,6 @@
 #include <DebugLog.h>
 #include "variables.h"
 
-
 #if defined(IR_enable)
   #include <IRremoteESP8266.h>
   #include <IRrecv.h>
