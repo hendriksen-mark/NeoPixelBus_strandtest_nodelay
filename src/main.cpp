@@ -31,10 +31,12 @@ void handleIrInput()
 		break;
 	}
 	case InputCommand::Up: {
+		setAutoplay(false);
 		adjustPattern(true);
 		break;
 	}
 	case InputCommand::Down: {
+		setAutoplay(false);
 		adjustPattern(false);
 		break;
 	}
@@ -82,50 +84,62 @@ void handleIrInput()
 							   //pattern buttons
 
 	case InputCommand::Pattern1: {
+		setAutoplay(false);
 		setPattern(0);
 		break;
 	}
 	case InputCommand::Pattern2: {
+		setAutoplay(false);
 		setPattern(1);
 		break;
 	}
 	case InputCommand::Pattern3: {
+		setAutoplay(false);
 		setPattern(2);
 		break;
 	}
 	case InputCommand::Pattern4: {
+		setAutoplay(false);
 		setPattern(3);
 		break;
 	}
 	case InputCommand::Pattern5: {
+		setAutoplay(false);
 		setPattern(4);
 		break;
 	}
 	case InputCommand::Pattern6: {
+		setAutoplay(false);
 		setPattern(5);
 		break;
 	}
 	case InputCommand::Pattern7: {
+		setAutoplay(false);
 		setPattern(6);
 		break;
 	}
 	case InputCommand::Pattern8: {
+		setAutoplay(false);
 		setPattern(7);
 		break;
 	}
 	case InputCommand::Pattern9: {
+		setAutoplay(false);
 		setPattern(8);
 		break;
 	}
 	case InputCommand::Pattern10: {
+		setAutoplay(false);
 		setPattern(9);
 		break;
 	}
 	case InputCommand::Pattern11: {
+		setAutoplay(false);
 		setPattern(10);
 		break;
 	}
 	case InputCommand::Pattern12: {
+		setAutoplay(false);
 		setPattern(11);
 		break;
 	}
@@ -221,6 +235,7 @@ void handleIrInput()
 
 void setup() {
 	Serial.begin(115200);
+	LOG_SET_LEVEL(DebugLogLevel::LVL_TRACE);
 #if defined(ESP8266)
 	pixels = new NeoPixelBus<COLOR_ORDER, LED_TYPE>(NUMPIXELS);
 #elif defined(ESP32)
@@ -234,7 +249,6 @@ void setup() {
 		pixels->SetPixelColor(i, Black);
 	}
 	pixels->Show(); // This sends the updated pixel color to the hardware.
-	Serial.println("Showcount = " + String(Showcount));
 	irReceiver.enableIRIn(); // Start the receiver
 }
 
@@ -245,10 +259,38 @@ void loop() {
 		pixels->Show();
 		return;
 	}
+
 	if (autoplay == 1) {
 		if ((unsigned long)(millis() - ShowPreviousMillis) >= ShowInterval) {
-			adjustPattern(true);
 			ShowPreviousMillis = millis();
+			if (Showcount == 0 || Showcount == 1) {
+			// Cycle through Red, Green, Blue, and White
+				switch (colorIndex) {
+				case 0:
+					setColor(Red); // Red
+					break;
+				case 1:
+					setColor(Green); // Green
+					break;
+				case 2:
+					setColor(Blue); // Blue
+					break;
+				case 3:
+					setColor(White); // White
+					break;
+				case 4:
+					colorIndex = 0;
+					setColor(Red); // Red
+					adjustPattern(true);
+					break;
+				}
+
+				colorIndex++;
+			}
+			else {
+				colorIndex = 0;
+				adjustPattern(true);
+			}
 		}
 	}
 
@@ -289,7 +331,6 @@ void loop() {
 }
 
 void setPattern(uint8_t value) {
-	setAutoplay(0);
 	if (value >= EndShow)
 		value = EndShow - 1;
 
@@ -298,7 +339,6 @@ void setPattern(uint8_t value) {
 }
 
 void adjustPattern(bool up) {
-	setAutoplay(0);
 	if (up)
 		Showcount++;
 	else
@@ -315,9 +355,9 @@ void adjustPattern(bool up) {
 
 void adjustSpeed(bool up) {
 	if (up)
-		pixelsInterval++;
-	else
 		pixelsInterval--;
+	else
+		pixelsInterval++;
 
 	// wrap around at the ends
 	if (pixelsInterval < 0)
@@ -370,6 +410,7 @@ void setColor(RgbColor c) {
 		(uint8_t)((c.G * brightness) / 255),
 		(uint8_t)((c.B * brightness) / 255)
 	);
+	LOG_DEBUG("setColor:", currentColor.R, currentColor.G, currentColor.B);
 }
 
 // Fill the dots one after the other with a color

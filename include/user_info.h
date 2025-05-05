@@ -11,14 +11,14 @@ const char* ssid = "";
 const char* password = "";
 
 #define COLOR_ORDER   NeoGrbFeature
-#define NUMPIXELS      5
+#define NUMPIXELS      16
 
 #if defined(ESP8266)
 #define LED_TYPE	Neo800KbpsMethod
 #define RECV_PIN	2  // pin for ir rec
 #elif defined(ESP32)
 #define LED_TYPE	NeoEsp32Rmt0Ws2812xMethod
-#define PIXELSPIN	18 //  pin for led strip
+#define PIXELSPIN	12 //  pin for led strip
 #define RECV_PIN	5  // pin for ir rec
 #endif
 

@@ -8,7 +8,7 @@
 // Variable declarations
 extern int StartShow;
 extern int EndShow;
-extern unsigned long pixelsInterval;
+extern long pixelsInterval;
 extern unsigned long ShowInterval;
 extern unsigned long colorWipePreviousMillis;
 extern unsigned long theaterChasePreviousMillis;

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "author": "Mark Hendriksen",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 27.14,
+      "left": 22.9,
+      "rotate": 90,
+      "attrs": {}
+    },
+    { "type": "wokwi-ir-receiver", "id": "ir1", "top": 27.45, "left": 228.62, "attrs": {} },
+    { "type": "wokwi-ir-remote", "id": "remote1", "top": -115.2, "left": 316.8, "attrs": {} },
+    {
+      "type": "wokwi-led-ring",
+      "id": "ring1",
+      "top": -162.56,
+      "left": -8.41,
+      "attrs": { "pixels": "16" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:GND.2", "ir1:GND", "black", [ "v0", "h96" ] ],
+    [ "ir1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "ir1:DAT", "esp:5", "green", [ "v76.8", "h-201.6" ] ],
+    [ "esp:12", "ring1:DIN", "green", [ "v-47.85", "h28.8" ] ],
+    [ "ring1:VCC", "esp:5V", "red", [ "v28.8", "h-76.8" ] ],
+    [ "ring1:GND", "esp:GND.1", "black", [ "v9.6", "h-19.2" ] ]
+  ],
+  "dependencies": {}
+}

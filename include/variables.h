@@ -7,8 +7,8 @@
 int StartShow = 0;
 int EndShow = 5;
 NeoPixelBus<COLOR_ORDER, LED_TYPE>* pixels = NULL;
-unsigned long pixelsInterval = 50;
-unsigned long ShowInterval = 60000;
+long pixelsInterval = 50;
+unsigned long ShowInterval = 6000;
 unsigned long colorWipePreviousMillis = 0;
 unsigned long theaterChasePreviousMillis = 0;
 unsigned long theaterChaseRainbowPreviousMillis = 0;
@@ -23,6 +23,7 @@ int rainbowCycleCycles = 0;
 int Showcount = 0;
 int brightness = 255;
 uint16_t currentPixel = 0;
+uint8_t colorIndex = 0;
 uint8_t power = 1;
 uint8_t autoplay = 1;
 float color[3];
