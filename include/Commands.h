@@ -221,6 +221,9 @@ enum class InputCommand {
 #define IRCODE_WOKWI_8                    16732845
 #define IRCODE_WOKWI_9                    16730805
 
+bool sparkfunRemoteEnabled = true;
+bool adafruitRemoteEnabled = true;
+bool etopxizuRemoteEnabled = true;
 bool B_K_LIGHTRemoteEnabled = true;
 bool wokwiRemoteEnabled = true;
 
