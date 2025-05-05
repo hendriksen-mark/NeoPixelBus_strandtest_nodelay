@@ -7,7 +7,7 @@
 int StartShow = 0;
 int EndShow = 5;
 NeoPixelBus<COLOR_ORDER, LED_TYPE>* pixels = NULL;
-long pixelsInterval = 50;
+unsigned long pixelsInterval = 50;
 unsigned long ShowInterval = 6000;
 unsigned long colorWipePreviousMillis = 0;
 unsigned long theaterChasePreviousMillis = 0;
