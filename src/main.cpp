@@ -361,9 +361,9 @@ void adjustSpeed(bool up) {
 
 	// wrap around at the ends
 	if (pixelsInterval < 0)
-		pixelsInterval = 0;
-	if (pixelsInterval >= 255)
 		pixelsInterval = 255;
+	if (pixelsInterval > 255)
+		pixelsInterval = 0;
 
 	LOG_DEBUG("adjustSpeed:", pixelsInterval);
 }
