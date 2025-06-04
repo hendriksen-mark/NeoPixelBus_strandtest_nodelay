@@ -8,6 +8,23 @@
 IRrecv irReceiver(RECV_PIN);
 #include "Commands.h"
 
+// Effect function pointer type
+typedef void (*EffectFunc)();
+
+// Array of effect functions (no wrappers needed)
+EffectFunc effects[] = {
+	colorWipe,
+	theaterChase,
+	theaterChaseRainbow,
+	rainbow,
+	rainbowCycle,
+	twinkle,
+	confetti,
+	meteorRain
+};
+
+const uint8_t numEffects = sizeof(effects) / sizeof(effects[0]);
+
 void handleIrInput()
 {
 	InputCommand command = readCommand(defaultHoldDelay);
@@ -27,7 +44,7 @@ void handleIrInput()
 		break;
 	}
 	case InputCommand::Palette: {
-		setPattern(random(Showcount));
+		setPattern(random(numEffects));
 		break;
 	}
 	case InputCommand::Up: {
@@ -80,8 +97,6 @@ void handleIrInput()
 		setAutoplay(!autoplay);
 		break;
 	}
-
-							   //pattern buttons
 
 	case InputCommand::Pattern1: {
 		setAutoplay(false);
@@ -143,8 +158,6 @@ void handleIrInput()
 		setPattern(11);
 		break;
 	}
-
-								// color buttons
 
 	case InputCommand::Red: {
 		setColor(Red);
@@ -264,7 +277,7 @@ void loop() {
 		if ((unsigned long)(millis() - ShowPreviousMillis) >= ShowInterval) {
 			ShowPreviousMillis = millis();
 			if (currentShow == 0 || currentShow == 1) {
-			// Cycle through Red, Green, Blue, and White
+				// Cycle through Red, Green, Blue, and White
 				switch (colorIndex) {
 				case 0:
 					setColor(Red); // Red
@@ -294,57 +307,12 @@ void loop() {
 		}
 	}
 
-	switch (currentShow) {
-	case 0:
-		if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
-			colorWipePreviousMillis = millis();
-			colorWipe(currentColor);
+	// Use a single timer for all effects
+	if (currentShow >= 0 && currentShow < numEffects) {
+		if ((unsigned long)(millis() - effectPreviousMillis) >= pixelsInterval) {
+			effectPreviousMillis = millis();
+			effects[currentShow]();
 		}
-		break;
-	case 1:
-		if ((unsigned long)(millis() - theaterChasePreviousMillis) >= pixelsInterval) {
-			theaterChasePreviousMillis = millis();
-			theaterChase(currentColor);
-		}
-		break;
-	case 2:
-		if ((unsigned long)(millis() - theaterChaseRainbowPreviousMillis) >= pixelsInterval) {
-			theaterChaseRainbowPreviousMillis = millis();
-			theaterChaseRainbow();
-		}
-		break;
-	case 3:
-		if ((unsigned long)(millis() - rainbowPreviousMillis) >= pixelsInterval) {
-			rainbowPreviousMillis = millis();
-			rainbow();
-		}
-		break;
-	case 4:
-		if ((unsigned long)(millis() - rainbowCyclesPreviousMillis) >= pixelsInterval) {
-			rainbowCyclesPreviousMillis = millis();
-			rainbowCycle();
-		}
-		break;
-	case 5: // Add new case for Twinkle effect
-		if ((unsigned long)(millis() - twinklePreviousMillis) >= pixelsInterval) {
-			twinklePreviousMillis = millis();
-			twinkle();
-		}
-		break;
-	case 6: // Confetti
-		if ((unsigned long)(millis() - confettiPreviousMillis) >= pixelsInterval) {
-			confettiPreviousMillis = millis();
-			confetti();
-		}
-		break;
-	case 7: // Meteor Rain
-		if ((unsigned long)(millis() - meteorRainPreviousMillis) >= pixelsInterval) {
-			meteorRainPreviousMillis = millis();
-			meteorRain();
-		}
-		break;
-	default:
-		break;
 	}
 }
 
@@ -410,7 +378,7 @@ void meteorRain() {
 }
 
 void setPattern(uint8_t value) {
-	if (value > Showcount) value = Showcount;
+	if (value > numEffects) value = numEffects;
 	else if (value < 0) value = 0;
 
 	LOG_DEBUG("setPattern:", value);
@@ -425,8 +393,8 @@ void adjustPattern(bool up) {
 
 	// wrap around at the ends
 	if (currentShow < 0)
-		currentShow = Showcount;
-	if (currentShow > Showcount)
+		currentShow = numEffects;
+	if (currentShow > numEffects)
 		currentShow = 0;
 
 	LOG_DEBUG("adjustPattern:", currentShow);
@@ -493,8 +461,8 @@ void setColor(RgbColor c) {
 }
 
 // Fill the dots one after the other with a color
-void colorWipe(RgbColor c) {
-	pixels->SetPixelColor(currentPixel, c);
+void colorWipe() {
+	pixels->SetPixelColor(currentPixel, currentColor);
 	pixels->Show();
 	currentPixel++;
 	if (currentPixel == NUMPIXELS) {
@@ -526,9 +494,9 @@ void rainbowCycle() {
 }
 
 //Theatre-style crawling lights.
-void theaterChase(RgbColor c) {
+void theaterChase() {
 	for (int i = 0; i < NUMPIXELS; i = i + 3) {
-		pixels->SetPixelColor(i + theaterChaseQ, c);  //turn every third pixel on
+		pixels->SetPixelColor(i + theaterChaseQ, currentColor);  //turn every third pixel on
 	}
 	pixels->Show();
 	for (int i = 0; i < NUMPIXELS; i = i + 3) {

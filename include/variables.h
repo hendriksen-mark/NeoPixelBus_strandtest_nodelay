@@ -5,19 +5,11 @@
 
 // Variable definitions
 int StartShow = 0;
-int Showcount = 7;
 NeoPixelBus<COLOR_ORDER, LED_TYPE>* pixels = NULL;
 unsigned long pixelsInterval = 50;
 unsigned long ShowInterval = 6000;
-unsigned long colorWipePreviousMillis = 0;
-unsigned long theaterChasePreviousMillis = 0;
-unsigned long theaterChaseRainbowPreviousMillis = 0;
-unsigned long rainbowPreviousMillis = 0;
-unsigned long rainbowCyclesPreviousMillis = 0;
+unsigned long effectPreviousMillis = 0;
 unsigned long ShowPreviousMillis = 0;
-unsigned long twinklePreviousMillis = 0;
-unsigned long confettiPreviousMillis = 0;
-unsigned long meteorRainPreviousMillis = 0;
 int theaterChaseQ = 0;
 int theaterChaseRainbowQ = 0;
 int theaterChaseRainbowCycles = 0;

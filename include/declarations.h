@@ -7,18 +7,11 @@
 
 // Variable declarations
 extern int StartShow;
-extern int Showcount;
+extern const uint8_t numEffects;
 extern unsigned long pixelsInterval;
 extern unsigned long ShowInterval;
-extern unsigned long colorWipePreviousMillis;
-extern unsigned long theaterChasePreviousMillis;
-extern unsigned long theaterChaseRainbowPreviousMillis;
-extern unsigned long rainbowPreviousMillis;
-extern unsigned long rainbowCyclesPreviousMillis;
+extern unsigned long effectPreviousMillis;
 extern unsigned long ShowPreviousMillis;
-extern unsigned long twinklePreviousMillis;
-extern unsigned long confettiPreviousMillis;
-extern unsigned long meteorRainPreviousMillis;
 extern int theaterChaseQ;
 extern int theaterChaseRainbowQ;
 extern int theaterChaseRainbowCycles;
@@ -52,6 +45,7 @@ extern RgbColor Pink;
 extern RgbColor LightPink;
 extern RgbColor CornflowerBlue;
 extern RgbColor LightBlue;
+extern const uint8_t numEffects;
 
 // Function declarations
 void handleIrInput();
@@ -69,5 +63,8 @@ void setPower(uint8_t);
 void setAutoplay(uint8_t);
 void setBrightness(uint8_t);
 void setColor(RgbColor);
+void twinkle();
+void confetti();
+void meteorRain();
 
 #endif // DECLARATIONS_H
