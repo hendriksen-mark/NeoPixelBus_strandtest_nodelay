@@ -27,7 +27,7 @@ void handleIrInput()
 		break;
 	}
 	case InputCommand::Palette: {
-		setPattern(random(EndShow));
+		setPattern(random(Showcount));
 		break;
 	}
 	case InputCommand::Up: {
@@ -242,7 +242,7 @@ void setup() {
 	pixels = new NeoPixelBus<COLOR_ORDER, LED_TYPE>(NUMPIXELS, PIXELSPIN);
 #endif
 	currentPixel = 0;
-	Showcount = StartShow;
+	currentShow = StartShow;
 
 	pixels->Begin(); // This initializes the NeoPixel library.
 	for (int i = 0; i < NUMPIXELS; i++) {
@@ -263,7 +263,7 @@ void loop() {
 	if (autoplay == 1) {
 		if ((unsigned long)(millis() - ShowPreviousMillis) >= ShowInterval) {
 			ShowPreviousMillis = millis();
-			if (Showcount == 0 || Showcount == 1) {
+			if (currentShow == 0 || currentShow == 1) {
 			// Cycle through Red, Green, Blue, and White
 				switch (colorIndex) {
 				case 0:
@@ -294,7 +294,7 @@ void loop() {
 		}
 	}
 
-	switch (Showcount) {
+	switch (currentShow) {
 	case 0:
 		if ((unsigned long)(millis() - colorWipePreviousMillis) >= pixelsInterval) {
 			colorWipePreviousMillis = millis();
@@ -325,32 +325,111 @@ void loop() {
 			rainbowCycle();
 		}
 		break;
+	case 5: // Add new case for Twinkle effect
+		if ((unsigned long)(millis() - twinklePreviousMillis) >= pixelsInterval) {
+			twinklePreviousMillis = millis();
+			twinkle();
+		}
+		break;
+	case 6: // Confetti
+		if ((unsigned long)(millis() - confettiPreviousMillis) >= pixelsInterval) {
+			confettiPreviousMillis = millis();
+			confetti();
+		}
+		break;
+	case 7: // Meteor Rain
+		if ((unsigned long)(millis() - meteorRainPreviousMillis) >= pixelsInterval) {
+			meteorRainPreviousMillis = millis();
+			meteorRain();
+		}
+		break;
 	default:
 		break;
 	}
 }
 
+// Example: Add Twinkle effect from tree-v2
+void twinkle() {
+	for (int i = 0; i < NUMPIXELS; i++) {
+		if (random(10) == 0) {
+			pixels->SetPixelColor(i, currentColor);
+		} else {
+			pixels->SetPixelColor(i, Black);
+		}
+	}
+	pixels->Show();
+}
+
+// Confetti effect: random colored speckles that blink and fade smoothly
+void confetti() {
+	// Fade all pixels slightly
+	for (int i = 0; i < NUMPIXELS; i++) {
+		RgbColor c = pixels->GetPixelColor(i);
+		// Fade by 10/255 per frame
+		uint8_t r = (uint8_t)((int)c.R * 245 / 255);
+		uint8_t g = (uint8_t)((int)c.G * 245 / 255);
+		uint8_t b = (uint8_t)((int)c.B * 245 / 255);
+		pixels->SetPixelColor(i, RgbColor(r, g, b));
+	}
+	// Add a random colored pixel
+	int pos = random(NUMPIXELS);
+	uint8_t r = (uint8_t)random(0, brightness);
+	uint8_t g = (uint8_t)random(0, brightness);
+	uint8_t b = (uint8_t)random(0, brightness);
+	pixels->SetPixelColor(pos, RgbColor(r, g, b));
+	pixels->Show();
+}
+
+// Meteor Rain effect: a bright dot moves across the strip with fading tails
+void meteorRain() {
+	static int meteorPos = 0;
+	static int meteorDir = 1; // 1 = forward, -1 = backward
+
+	// Fade all pixels slightly
+	for (int i = 0; i < NUMPIXELS; i++) {
+		RgbColor c = pixels->GetPixelColor(i);
+		uint8_t r = (uint8_t)((int)c.R * 200 / 255);
+		uint8_t g = (uint8_t)((int)c.G * 200 / 255);
+		uint8_t b = (uint8_t)((int)c.B * 200 / 255);
+		pixels->SetPixelColor(i, RgbColor(r, g, b));
+	}
+
+	// Draw meteor
+	pixels->SetPixelColor(meteorPos, currentColor);
+	pixels->Show();
+
+	// Move meteor
+	meteorPos += meteorDir;
+	if (meteorPos >= NUMPIXELS) {
+		meteorPos = NUMPIXELS - 1;
+		meteorDir = -1;
+	} else if (meteorPos < 0) {
+		meteorPos = 0;
+		meteorDir = 1;
+	}
+}
+
 void setPattern(uint8_t value) {
-	if (value >= EndShow)
-		value = EndShow - 1;
+	if (value > Showcount) value = Showcount;
+	else if (value < 0) value = 0;
 
 	LOG_DEBUG("setPattern:", value);
-	Showcount = value;
+	currentShow = value;
 }
 
 void adjustPattern(bool up) {
 	if (up)
-		Showcount++;
+		currentShow++;
 	else
-		Showcount--;
+		currentShow--;
 
 	// wrap around at the ends
-	if (Showcount < 0)
-		Showcount = EndShow;
-	if (Showcount >= EndShow)
-		Showcount = 0;
+	if (currentShow < 0)
+		currentShow = Showcount;
+	if (currentShow > Showcount)
+		currentShow = 0;
 
-	LOG_DEBUG("adjustPattern:", Showcount);
+	LOG_DEBUG("adjustPattern:", currentShow);
 }
 
 void adjustSpeed(bool up) {

@@ -7,7 +7,7 @@
 
 // Variable declarations
 extern int StartShow;
-extern int EndShow;
+extern int Showcount;
 extern unsigned long pixelsInterval;
 extern unsigned long ShowInterval;
 extern unsigned long colorWipePreviousMillis;
@@ -16,12 +16,15 @@ extern unsigned long theaterChaseRainbowPreviousMillis;
 extern unsigned long rainbowPreviousMillis;
 extern unsigned long rainbowCyclesPreviousMillis;
 extern unsigned long ShowPreviousMillis;
+extern unsigned long twinklePreviousMillis;
+extern unsigned long confettiPreviousMillis;
+extern unsigned long meteorRainPreviousMillis;
 extern int theaterChaseQ;
 extern int theaterChaseRainbowQ;
 extern int theaterChaseRainbowCycles;
 extern int rainbowCycles;
 extern int rainbowCycleCycles;
-extern int Showcount;
+extern int currentShow;
 extern int brightness;
 extern uint16_t currentPixel;
 extern uint8_t power;
