@@ -13,17 +13,17 @@ typedef void (*EffectFunc)();
 
 // Array of effect functions (no wrappers needed)
 EffectFunc effects[] = {
-	colorWipe,
-	theaterChase,
-	theaterChaseRainbow,
-	rainbow,
-	rainbowCycle,
-	twinkle,
-	confetti,
-	meteorRain,
-	pulse,
-	sparkle,
-	letterHighlight
+	colorWipe,				// pattern 0
+	theaterChase,			// pattern 1
+	theaterChaseRainbow,	// pattern 2
+	rainbow,				// pattern 3
+	rainbowCycle,			// pattern 4
+	twinkle,				// pattern 5
+	confetti,				// pattern 6
+	meteorRain,				// pattern 7
+	pulse,					// pattern 8
+	sparkle,				// pattern 9
+	letterHighlight			// pattern 10
 };
 
 const uint8_t numEffects = sizeof(effects) / sizeof(effects[0]);
@@ -58,7 +58,7 @@ void loop() {
 	if (autoplay == 1) {
 		if ((unsigned long)(millis() - ShowPreviousMillis) >= ShowInterval) {
 			ShowPreviousMillis = millis();
-			if (currentShow == 0 || currentShow == 1) {
+			if (currentShow == 0 || currentShow == 1 || currentShow == 5 || currentShow == 7 || currentShow == 8 || currentShow == 10) {
 				// Cycle through Red, Green, Blue, and White
 				switch (colorIndex) {
 				case 0:
@@ -182,7 +182,7 @@ void setColor(RgbColor c) {
 }
 
 // Fill the dots one after the other with a color
-void colorWipe() {
+void colorWipe() { // pattern 0
 	pixels->SetPixelColor(currentPixel, currentColor);
 	pixels->Show();
 	currentPixel++;
@@ -191,7 +191,7 @@ void colorWipe() {
 	}
 }
 
-void rainbow() {
+void rainbow() { // pattern 3
 	for (uint16_t i = 0; i < NUMPIXELS; i++) {
 		pixels->SetPixelColor(i, Wheel((i + rainbowCycles) & 255));
 	}
@@ -201,7 +201,7 @@ void rainbow() {
 }
 
 // Slightly different, this makes the rainbow equally distributed throughout
-void rainbowCycle() {
+void rainbowCycle() { // pattern 4
 	uint16_t i;
 
 	//for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
@@ -215,7 +215,7 @@ void rainbowCycle() {
 }
 
 //Theatre-style crawling lights.
-void theaterChase() {
+void theaterChase() { // pattern 1
 	for (int i = 0; i < NUMPIXELS; i = i + 3) {
 		pixels->SetPixelColor(i + theaterChaseQ, currentColor);  //turn every third pixel on
 	}
@@ -229,7 +229,7 @@ void theaterChase() {
 
 
 //Theatre-style crawling lights with rainbow effect
-void theaterChaseRainbow() {
+void theaterChaseRainbow() { // pattern 2
 	for (int i = 0; i < NUMPIXELS; i = i + 3) {
 		pixels->SetPixelColor(i + theaterChaseRainbowQ, Wheel((i + theaterChaseRainbowCycles) % 255)); //turn every third pixel on
 	}
@@ -268,7 +268,7 @@ RgbColor Wheel(byte WheelPos) {
 	return RgbColor((uint8_t)color[0], (uint8_t)color[1], (uint8_t)color[2]);
 }
 
-void twinkle() {
+void twinkle() { // pattern 5
 	for (int i = 0; i < NUMPIXELS; i++) {
 		if (random(10) == 0) {
 			pixels->SetPixelColor(i, currentColor);
@@ -280,7 +280,7 @@ void twinkle() {
 }
 
 // Confetti effect: random colored speckles that blink and fade smoothly
-void confetti() {
+void confetti() { // pattern 6
 	// Fade all pixels slightly
 	for (int i = 0; i < NUMPIXELS; i++) {
 		RgbColor c = pixels->GetPixelColor(i);
@@ -300,7 +300,7 @@ void confetti() {
 }
 
 // Meteor Rain effect: a bright dot moves across the strip with fading tails
-void meteorRain() {
+void meteorRain() { // pattern 7
 	static int meteorPos = 0;
 	static int meteorDir = 1; // 1 = forward, -1 = backward
 
@@ -329,7 +329,7 @@ void meteorRain() {
 }
 
 // Pulse/Breathing effect: all LEDs fade in and out together
-void pulse() {
+void pulse() { // pattern 8
 	static int pulseValue = 0;
 	static int pulseDirection = 1;
 	pulseValue += pulseDirection * 5;
@@ -352,7 +352,7 @@ void pulse() {
 }
 
 // Sparkle effect: random LEDs flash white briefly
-void sparkle() {
+void sparkle() { // pattern 9
 	static int sparkleTimer = 0;
 	// Dim all LEDs slightly
 	for (int i = 0; i < NUMPIXELS; i++) {
@@ -362,16 +362,16 @@ void sparkle() {
 		uint8_t b = (uint8_t)((int)c.B * 200 / 255);
 		pixels->SetPixelColor(i, RgbColor(r, g, b));
 	}
-	// Occasionally flash a random LED white
+	// Occasionally flash a random LED with the current color
 	if (++sparkleTimer % 3 == 0) {
 		int pos = random(NUMPIXELS);
-		pixels->SetPixelColor(pos, White);
+		pixels->SetPixelColor(pos, currentColor);
 	}
 	pixels->Show();
 }
 
 // Letter highlight effect: one LED at a time, then all, then off, repeat
-void letterHighlight() {
+void letterHighlight() { // pattern 10
 	static int phase = 0; // 0: forward, 1: all on, 2: all off, 3: backward, 4: all on, 5: all off
 	static int idx = 0;
 	static unsigned long lastChange = 0;
