@@ -48,7 +48,6 @@ extern RgbColor LightBlue;
 
 // Function declarations
 // Effects
-void handleIrInput();
 void colorWipe();
 void rainbow();
 void rainbowCycle();
@@ -61,6 +60,7 @@ void pulse();
 void sparkle();
 void letterHighlight();
 // Effects helpers
+void handleIrInput();
 RgbColor Wheel(byte);
 void setPattern(uint8_t);
 void adjustPattern(bool);
