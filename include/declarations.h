@@ -49,10 +49,10 @@ extern const uint8_t numEffects;
 
 // Function declarations
 void handleIrInput();
-void colorWipe(RgbColor);
+void colorWipe();
 void rainbow();
 void rainbowCycle();
-void theaterChase(RgbColor);
+void theaterChase();
 void theaterChaseRainbow();
 RgbColor Wheel(byte);
 void setPattern(uint8_t);

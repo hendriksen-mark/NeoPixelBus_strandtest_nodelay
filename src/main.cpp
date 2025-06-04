@@ -379,7 +379,7 @@ void meteorRain() {
 
 void setPattern(uint8_t value) {
 	if (value > numEffects) value = numEffects;
-	else if (value < 0) value = 0;
+	else if (value < StartShow) value = StartShow;
 
 	LOG_DEBUG("setPattern:", value);
 	currentShow = value;
@@ -392,10 +392,10 @@ void adjustPattern(bool up) {
 		currentShow--;
 
 	// wrap around at the ends
-	if (currentShow < 0)
+	if (currentShow < StartShow)
 		currentShow = numEffects;
 	if (currentShow > numEffects)
-		currentShow = 0;
+		currentShow = StartShow;
 
 	LOG_DEBUG("adjustPattern:", currentShow);
 }
