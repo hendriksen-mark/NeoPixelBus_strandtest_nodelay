@@ -20,7 +20,10 @@ EffectFunc effects[] = {
 	rainbowCycle,
 	twinkle,
 	confetti,
-	meteorRain
+	meteorRain,
+	pulse,
+	sparkle,
+	letterHighlight
 };
 
 const uint8_t numEffects = sizeof(effects) / sizeof(effects[0]);
@@ -316,67 +319,6 @@ void loop() {
 	}
 }
 
-// Example: Add Twinkle effect from tree-v2
-void twinkle() {
-	for (int i = 0; i < NUMPIXELS; i++) {
-		if (random(10) == 0) {
-			pixels->SetPixelColor(i, currentColor);
-		} else {
-			pixels->SetPixelColor(i, Black);
-		}
-	}
-	pixels->Show();
-}
-
-// Confetti effect: random colored speckles that blink and fade smoothly
-void confetti() {
-	// Fade all pixels slightly
-	for (int i = 0; i < NUMPIXELS; i++) {
-		RgbColor c = pixels->GetPixelColor(i);
-		// Fade by 10/255 per frame
-		uint8_t r = (uint8_t)((int)c.R * 245 / 255);
-		uint8_t g = (uint8_t)((int)c.G * 245 / 255);
-		uint8_t b = (uint8_t)((int)c.B * 245 / 255);
-		pixels->SetPixelColor(i, RgbColor(r, g, b));
-	}
-	// Add a random colored pixel
-	int pos = random(NUMPIXELS);
-	uint8_t r = (uint8_t)random(0, brightness);
-	uint8_t g = (uint8_t)random(0, brightness);
-	uint8_t b = (uint8_t)random(0, brightness);
-	pixels->SetPixelColor(pos, RgbColor(r, g, b));
-	pixels->Show();
-}
-
-// Meteor Rain effect: a bright dot moves across the strip with fading tails
-void meteorRain() {
-	static int meteorPos = 0;
-	static int meteorDir = 1; // 1 = forward, -1 = backward
-
-	// Fade all pixels slightly
-	for (int i = 0; i < NUMPIXELS; i++) {
-		RgbColor c = pixels->GetPixelColor(i);
-		uint8_t r = (uint8_t)((int)c.R * 200 / 255);
-		uint8_t g = (uint8_t)((int)c.G * 200 / 255);
-		uint8_t b = (uint8_t)((int)c.B * 200 / 255);
-		pixels->SetPixelColor(i, RgbColor(r, g, b));
-	}
-
-	// Draw meteor
-	pixels->SetPixelColor(meteorPos, currentColor);
-	pixels->Show();
-
-	// Move meteor
-	meteorPos += meteorDir;
-	if (meteorPos >= NUMPIXELS) {
-		meteorPos = NUMPIXELS - 1;
-		meteorDir = -1;
-	} else if (meteorPos < 0) {
-		meteorPos = 0;
-		meteorDir = 1;
-	}
-}
-
 void setPattern(uint8_t value) {
 	if (value > numEffects) value = numEffects;
 	else if (value < StartShow) value = StartShow;
@@ -545,4 +487,139 @@ RgbColor Wheel(byte WheelPos) {
 	color[1] = (255 - WheelPos * 3) * brightness / 255;
 	color[2] = 0;
 	return RgbColor((uint8_t)color[0], (uint8_t)color[1], (uint8_t)color[2]);
+}
+
+void twinkle() {
+	for (int i = 0; i < NUMPIXELS; i++) {
+		if (random(10) == 0) {
+			pixels->SetPixelColor(i, currentColor);
+		} else {
+			pixels->SetPixelColor(i, Black);
+		}
+	}
+	pixels->Show();
+}
+
+// Confetti effect: random colored speckles that blink and fade smoothly
+void confetti() {
+	// Fade all pixels slightly
+	for (int i = 0; i < NUMPIXELS; i++) {
+		RgbColor c = pixels->GetPixelColor(i);
+		// Fade by 10/255 per frame
+		uint8_t r = (uint8_t)((int)c.R * 245 / 255);
+		uint8_t g = (uint8_t)((int)c.G * 245 / 255);
+		uint8_t b = (uint8_t)((int)c.B * 245 / 255);
+		pixels->SetPixelColor(i, RgbColor(r, g, b));
+	}
+	// Add a random colored pixel
+	int pos = random(NUMPIXELS);
+	uint8_t r = (uint8_t)random(0, brightness);
+	uint8_t g = (uint8_t)random(0, brightness);
+	uint8_t b = (uint8_t)random(0, brightness);
+	pixels->SetPixelColor(pos, RgbColor(r, g, b));
+	pixels->Show();
+}
+
+// Meteor Rain effect: a bright dot moves across the strip with fading tails
+void meteorRain() {
+	static int meteorPos = 0;
+	static int meteorDir = 1; // 1 = forward, -1 = backward
+
+	// Fade all pixels slightly
+	for (int i = 0; i < NUMPIXELS; i++) {
+		RgbColor c = pixels->GetPixelColor(i);
+		uint8_t r = (uint8_t)((int)c.R * 200 / 255);
+		uint8_t g = (uint8_t)((int)c.G * 200 / 255);
+		uint8_t b = (uint8_t)((int)c.B * 200 / 255);
+		pixels->SetPixelColor(i, RgbColor(r, g, b));
+	}
+
+	// Draw meteor
+	pixels->SetPixelColor(meteorPos, currentColor);
+	pixels->Show();
+
+	// Move meteor
+	meteorPos += meteorDir;
+	if (meteorPos >= NUMPIXELS) {
+		meteorPos = NUMPIXELS - 1;
+		meteorDir = -1;
+	} else if (meteorPos < 0) {
+		meteorPos = 0;
+		meteorDir = 1;
+	}
+}
+
+// Pulse/Breathing effect: all LEDs fade in and out together
+void pulse() {
+	static int pulseValue = 0;
+	static int pulseDirection = 1;
+	pulseValue += pulseDirection * 5;
+	if (pulseValue >= 255) {
+		pulseValue = 255;
+		pulseDirection = -1;
+	} else if (pulseValue <= 0) {
+		pulseValue = 0;
+		pulseDirection = 1;
+	}
+	RgbColor c(
+		(uint8_t)((currentColor.R * pulseValue) / 255),
+		(uint8_t)((currentColor.G * pulseValue) / 255),
+		(uint8_t)((currentColor.B * pulseValue) / 255)
+	);
+	for (int i = 0; i < NUMPIXELS; i++) {
+		pixels->SetPixelColor(i, c);
+	}
+	pixels->Show();
+}
+
+// Sparkle effect: random LEDs flash white briefly
+void sparkle() {
+	static int sparkleTimer = 0;
+	// Dim all LEDs slightly
+	for (int i = 0; i < NUMPIXELS; i++) {
+		RgbColor c = pixels->GetPixelColor(i);
+		uint8_t r = (uint8_t)((int)c.R * 200 / 255);
+		uint8_t g = (uint8_t)((int)c.G * 200 / 255);
+		uint8_t b = (uint8_t)((int)c.B * 200 / 255);
+		pixels->SetPixelColor(i, RgbColor(r, g, b));
+	}
+	// Occasionally flash a random LED white
+	if (++sparkleTimer % 3 == 0) {
+		int pos = random(NUMPIXELS);
+		pixels->SetPixelColor(pos, White);
+	}
+	pixels->Show();
+}
+
+// Letter highlight effect: one LED at a time, then all, then off, repeat
+void letterHighlight() {
+	static int phase = 0; // 0: one-by-one, 1: all on, 2: all off
+	static int idx = 0;
+	static unsigned long lastChange = 0;
+	const unsigned long stepDelay = 300; // ms per step
+
+	if (millis() - lastChange < stepDelay) return;
+	lastChange = millis();
+
+	if (phase == 0) {
+		// Light up one LED at a time
+		pixels->ClearTo(Black);
+		if (idx < NUMPIXELS) {
+			pixels->SetPixelColor(idx, currentColor);
+			idx++;
+		} else {
+			phase = 1;
+			idx = 0;
+		}
+	} else if (phase == 1) {
+		// All on
+		pixels->ClearTo(currentColor);
+		phase = 2;
+	} else {
+		// All off
+		pixels->ClearTo(Black);
+		phase = 0;
+		idx = 0;
+	}
+	pixels->Show();
 }
