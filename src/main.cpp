@@ -372,52 +372,47 @@ void sparkle() {
 
 // Letter highlight effect: one LED at a time, then all, then off, repeat
 void letterHighlight() {
-	static int phase = 0; // 0: one-by-one forward, 1: all on, 2: all off, 3: one-by-one backward, 4: all on, 5: all off
+	static int phase = 0; // 0: forward, 1: all on, 2: all off, 3: backward, 4: all on, 5: all off
 	static int idx = 0;
 	static unsigned long lastChange = 0;
-	const unsigned long stepDelay = 300; // ms per step
+	const unsigned long stepDelay = 300;
 
 	if (millis() - lastChange < stepDelay) return;
 	lastChange = millis();
 
-	if (phase == 0) {
-		// Light up one LED at a time (forward)
-		pixels->ClearTo(Black);
-		if (idx < NUMPIXELS) {
-			pixels->SetPixelColor(idx, currentColor);
-			idx++;
-		} else {
-			phase = 1;
-			idx = 0;
-		}
-	} else if (phase == 1) {
-		// All on
-		pixels->ClearTo(currentColor);
-		phase = 2;
-	} else if (phase == 2) {
-		// All off
-		pixels->ClearTo(Black);
-		phase = 3;
-		idx = NUMPIXELS - 1;
-	} else if (phase == 3) {
-		// Light up one LED at a time (backward)
-		pixels->ClearTo(Black);
-		if (idx >= 0) {
-			pixels->SetPixelColor(idx, currentColor);
-			idx--;
-		} else {
-			phase = 4;
-			idx = 0;
-		}
-	} else if (phase == 4) {
-		// All on (after backward)
-		pixels->ClearTo(currentColor);
-		phase = 5;
-	} else if (phase == 5) {
-		// All off (after backward)
-		pixels->ClearTo(Black);
-		phase = 0;
-		idx = 0;
+	pixels->ClearTo(Black);
+
+	switch (phase) {
+		case 0: // forward
+			if (idx < NUMPIXELS) {
+				pixels->SetPixelColor(idx, currentColor);
+				idx++;
+			} else {
+				phase = 1; idx = 0;
+			}
+			break;
+		case 1: // all on
+			pixels->ClearTo(currentColor);
+			phase = 2;
+			break;
+		case 2: // all off
+			phase = 3; idx = NUMPIXELS - 1;
+			break;
+		case 3: // backward
+			if (idx >= 0) {
+				pixels->SetPixelColor(idx, currentColor);
+				idx--;
+			} else {
+				phase = 4; idx = 0;
+			}
+			break;
+		case 4: // all on
+			pixels->ClearTo(currentColor);
+			phase = 5;
+			break;
+		case 5: // all off
+			phase = 0; idx = 0;
+			break;
 	}
 	pixels->Show();
 }
