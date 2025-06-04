@@ -1,3 +1,4 @@
+#define DEBUGLOG_DEFAULT_LOG_LEVEL_TRACE
 #include "Commands.h"
 #include "declarations.h"
 #include <DebugLog.h>

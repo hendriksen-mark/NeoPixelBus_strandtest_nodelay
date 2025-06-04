@@ -1,3 +1,4 @@
+#define DEBUGLOG_DEFAULT_LOG_LEVEL_TRACE
 #include <Arduino.h>
 #include <NeoPixelBus.h>
 #include <DebugLog.h>

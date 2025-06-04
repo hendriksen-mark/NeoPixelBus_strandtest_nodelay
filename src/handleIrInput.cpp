@@ -1,3 +1,4 @@
+#define DEBUGLOG_DEFAULT_LOG_LEVEL_TRACE
 #include "handleIrInput.h"
 #include <DebugLog.h>
 #include <IRremoteESP8266.h>
