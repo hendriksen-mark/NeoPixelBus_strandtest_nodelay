@@ -11,7 +11,7 @@ inline char ssid[] = "your_ssid";
 inline char password[] = "your_password";
 
 #define COLOR_ORDER   NeoGrbFeature
-#define NUMPIXELS      16
+#define NUMPIXELS      5
 
 #if defined(ESP8266)
 #define LED_TYPE	Neo800KbpsMethod

@@ -102,7 +102,7 @@ void setPattern(uint8_t value) {
 	if (value > numEffects) value = numEffects;
 	else if (value < StartShow) value = StartShow;
 
-	LOG_DEBUG("setPattern:", value);
+	LOG_DEBUG(value);
 	currentShow = value;
 }
 
@@ -114,11 +114,11 @@ void adjustPattern(bool up) {
 
 	// wrap around at the ends
 	if (currentShow < StartShow)
-		currentShow = numEffects;
-	if (currentShow > numEffects)
+		currentShow = numEffects - 1;
+	if (currentShow >= numEffects)
 		currentShow = StartShow;
 
-	LOG_DEBUG("adjustPattern:", currentShow);
+	LOG_DEBUG(currentShow);
 }
 
 void adjustSpeed(bool up) {
@@ -133,13 +133,13 @@ void adjustSpeed(bool up) {
 	if (pixelsInterval > 255)
 		pixelsInterval = 0;
 
-	LOG_DEBUG("adjustSpeed:", pixelsInterval);
+	LOG_DEBUG(pixelsInterval);
 }
 
 void setPower(uint8_t value) {
 	power = value == 0 ? 0 : 1;
 
-	LOG_DEBUG("setPower:", power);
+	LOG_DEBUG(power);
 }
 
 void adjustBrightness(bool up) {
@@ -153,7 +153,7 @@ void adjustBrightness(bool up) {
 	else if (brightness > 255)
 		brightness = 255;
 
-	LOG_DEBUG("adjustBrightness:", brightness);
+	LOG_DEBUG(brightness);
 }
 
 void setBrightness(uint8_t value) {
@@ -162,13 +162,13 @@ void setBrightness(uint8_t value) {
 	else if (value < 0) value = 0;
 
 	brightness = value;
-	LOG_DEBUG("setBrightness:", brightness);
+	LOG_DEBUG(brightness);
 }
 
 void setAutoplay(uint8_t value) {
 	autoplay = value;
 
-	LOG_DEBUG("setAutoplay:", autoplay);
+	LOG_DEBUG(autoplay);
 }
 
 void setColor(RgbColor c) {
@@ -178,7 +178,7 @@ void setColor(RgbColor c) {
 		(uint8_t)((c.G * brightness) / 255),
 		(uint8_t)((c.B * brightness) / 255)
 	);
-	LOG_DEBUG("setColor:", currentColor.R, currentColor.G, currentColor.B);
+	LOG_DEBUG(currentColor.R, currentColor.G, currentColor.B);
 }
 
 // Fill the dots one after the other with a color
@@ -372,7 +372,7 @@ void sparkle() {
 
 // Letter highlight effect: one LED at a time, then all, then off, repeat
 void letterHighlight() {
-	static int phase = 0; // 0: one-by-one, 1: all on, 2: all off
+	static int phase = 0; // 0: one-by-one forward, 1: all on, 2: all off, 3: one-by-one backward, 4: all on, 5: all off
 	static int idx = 0;
 	static unsigned long lastChange = 0;
 	const unsigned long stepDelay = 300; // ms per step
@@ -381,7 +381,7 @@ void letterHighlight() {
 	lastChange = millis();
 
 	if (phase == 0) {
-		// Light up one LED at a time
+		// Light up one LED at a time (forward)
 		pixels->ClearTo(Black);
 		if (idx < NUMPIXELS) {
 			pixels->SetPixelColor(idx, currentColor);
@@ -394,8 +394,27 @@ void letterHighlight() {
 		// All on
 		pixels->ClearTo(currentColor);
 		phase = 2;
-	} else {
+	} else if (phase == 2) {
 		// All off
+		pixels->ClearTo(Black);
+		phase = 3;
+		idx = NUMPIXELS - 1;
+	} else if (phase == 3) {
+		// Light up one LED at a time (backward)
+		pixels->ClearTo(Black);
+		if (idx >= 0) {
+			pixels->SetPixelColor(idx, currentColor);
+			idx--;
+		} else {
+			phase = 4;
+			idx = 0;
+		}
+	} else if (phase == 4) {
+		// All on (after backward)
+		pixels->ClearTo(currentColor);
+		phase = 5;
+	} else if (phase == 5) {
+		// All off (after backward)
 		pixels->ClearTo(Black);
 		phase = 0;
 		idx = 0;

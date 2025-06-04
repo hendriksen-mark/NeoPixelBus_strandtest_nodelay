@@ -203,13 +203,13 @@ enum class InputCommand {
 #define IRCODE_WOKWI_POWER                16729530
 #define IRCODE_WOKWI_MENU                 16730040
 #define IRCODE_WOKWI_TEST                 16729275
-#define IRCODE_WOKWI_PLUS                   16728255
+#define IRCODE_WOKWI_PLUS                 16728255
 #define IRCODE_WOKWI_BACK                 16729020
 #define IRCODE_WOKWI_PREV                 16713720
 #define IRCODE_WOKWI_PLAY                 16717290
-#define IRCODE_WOKWI_FORW                16714230
+#define IRCODE_WOKWI_FORW                 16714230
 #define IRCODE_WOKWI_0                    16717545
-#define IRCODE_WOKWI_MIN                 16718310
+#define IRCODE_WOKWI_MIN                  16718310
 #define IRCODE_WOKWI_C                    16715250
 #define IRCODE_WOKWI_1                    16714995
 #define IRCODE_WOKWI_2                    16718055

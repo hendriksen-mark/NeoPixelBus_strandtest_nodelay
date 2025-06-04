@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "author": "Mark Hendriksen",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 27.14,
+      "left": 22.9,
+      "rotate": 90,
+      "attrs": {}
+    },
+    { "type": "wokwi-neopixel", "id": "rgb1", "top": 25.3, "left": 8.6, "attrs": {} },
+    { "type": "wokwi-neopixel", "id": "rgb2", "top": 15.7, "left": 47, "attrs": {} },
+    { "type": "wokwi-neopixel", "id": "rgb3", "top": 6.1, "left": 85.4, "attrs": {} },
+    { "type": "wokwi-neopixel", "id": "rgb4", "top": -3.5, "left": 123.8, "attrs": {} },
+    { "type": "wokwi-neopixel", "id": "rgb5", "top": -13.1, "left": 162.2, "attrs": {} },
+    { "type": "wokwi-ir-receiver", "id": "ir1", "top": 27.45, "left": 228.62, "attrs": {} },
+    { "type": "wokwi-ir-remote", "id": "remote1", "top": -115.2, "left": 316.8, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:GND.1", "rgb1:VSS", "black", [ "v0" ] ],
+    [ "esp:5V", "rgb1:VDD", "red", [ "v0" ] ],
+    [ "rgb2:DOUT", "rgb1:DIN", "green", [ "h0" ] ],
+    [ "rgb1:VSS", "rgb2:VSS", "black", [ "v-0.9", "h37.6" ] ],
+    [ "rgb2:VDD", "rgb1:VDD", "red", [ "h0" ] ],
+    [ "rgb3:DOUT", "rgb2:DIN", "green", [ "h0" ] ],
+    [ "rgb3:VDD", "rgb2:VDD", "red", [ "h0" ] ],
+    [ "rgb3:VSS", "rgb2:VSS", "black", [ "v0" ] ],
+    [ "rgb4:DOUT", "rgb3:DIN", "green", [ "h0" ] ],
+    [ "rgb4:VDD", "rgb3:VDD", "red", [ "h0" ] ],
+    [ "rgb4:VSS", "rgb3:VSS", "black", [ "v0" ] ],
+    [ "rgb5:DOUT", "rgb4:DIN", "green", [ "h0" ] ],
+    [ "rgb5:VDD", "rgb4:VDD", "red", [ "h0" ] ],
+    [ "rgb5:VSS", "rgb4:VSS", "black", [ "v0" ] ],
+    [ "esp:12", "rgb5:DIN", "green", [ "v-28.65", "h163.2", "v-67.2" ] ],
+    [ "esp:GND.2", "ir1:GND", "black", [ "v0", "h96" ] ],
+    [ "ir1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "ir1:DAT", "esp:5", "green", [ "v76.8", "h-201.6" ] ]
+  ],
+  "dependencies": {}
+}
