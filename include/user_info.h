@@ -1,14 +1,14 @@
 #pragma once
 #include "Arduino.h"
 
-const bool apMode = false;
+inline const bool apMode = false;
 
 // AP mode password
-const char WiFiAPPSK[] = "";
+inline const char WiFiAPPSK[] = "";
 
 // Wi-Fi network to connect to (if not in AP mode)
-const char* ssid = "";
-const char* password = "";
+inline char ssid[] = "your_ssid";
+inline char password[] = "your_password";
 
 #define COLOR_ORDER   NeoGrbFeature
 #define NUMPIXELS      16
@@ -24,4 +24,4 @@ const char* password = "";
 
 // ten seconds per color palette makes a good demo
 // 20-120 is better for deployment
-uint8_t secondsPerPalette = 10;
+inline int secondsPerPalette = 10;

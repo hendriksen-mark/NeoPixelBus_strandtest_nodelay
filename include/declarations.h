@@ -4,6 +4,9 @@
 
 #include "Arduino.h"
 #include <NeoPixelBus.h>
+#include <IRremoteESP8266.h>
+#include <IRrecv.h>
+#include <IRutils.h>
 
 // Variable declarations
 extern int StartShow;
@@ -45,6 +48,7 @@ extern RgbColor Pink;
 extern RgbColor LightPink;
 extern RgbColor CornflowerBlue;
 extern RgbColor LightBlue;
+extern IRrecv irReceiver;
 
 // Function declarations
 // Effects
