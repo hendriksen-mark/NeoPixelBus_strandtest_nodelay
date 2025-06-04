@@ -11,22 +11,28 @@ IRrecv irReceiver(RECV_PIN);
 // Effect function pointer type
 typedef void (*EffectFunc)();
 
-// Array of effect functions (no wrappers needed)
-EffectFunc effects[] = {
-	colorWipe,				// pattern 0
-	theaterChase,			// pattern 1
-	theaterChaseRainbow,	// pattern 2
-	rainbow,				// pattern 3
-	rainbowCycle,			// pattern 4
-	twinkle,				// pattern 5
-	confetti,				// pattern 6
-	meteorRain,				// pattern 7
-	pulse,					// pattern 8
-	sparkle,				// pattern 9
-	letterHighlight			// pattern 10
+// Struct for mapping effect function to name
+struct PatternAndName {
+	EffectFunc func;
+	const char* name;
 };
 
-const uint8_t numEffects = sizeof(effects) / sizeof(effects[0]);
+// Array of effect functions and their names
+PatternAndName patterns[] = {
+	{ colorWipe,          	"Color Wipe" },
+	{ theaterChase,      	"Theater Chase" },
+	{ theaterChaseRainbow,  "Theater Chase Rainbow" },
+	{ rainbow,          	"Rainbow" },
+	{ rainbowCycle,     	"Rainbow Cycle" },
+	{ twinkle,          	"Twinkle" },
+	{ confetti,         	"Confetti" },
+	{ meteorRain,       	"Meteor Rain" },
+	{ pulse,            	"Pulse" },
+	{ sparkle,          	"Sparkle" },
+	{ letterHighlight,  	"Letter Highlight" }
+};
+
+const uint8_t numEffects = sizeof(patterns) / sizeof(patterns[0]);
 
 void setup() {
 	Serial.begin(115200);
@@ -93,7 +99,7 @@ void loop() {
 	if (currentShow >= 0 && currentShow < numEffects) {
 		if ((unsigned long)(millis() - effectPreviousMillis) >= pixelsInterval) {
 			effectPreviousMillis = millis();
-			effects[currentShow]();
+			patterns[currentShow].func();
 		}
 	}
 }
@@ -102,7 +108,7 @@ void setPattern(uint8_t value) {
 	if (value > numEffects) value = numEffects;
 	else if (value < StartShow) value = StartShow;
 
-	LOG_DEBUG(value);
+	LOG_DEBUG(patterns[value].name);
 	currentShow = value;
 }
 
@@ -118,7 +124,7 @@ void adjustPattern(bool up) {
 	if (currentShow >= numEffects)
 		currentShow = StartShow;
 
-	LOG_DEBUG(currentShow);
+	LOG_DEBUG(patterns[currentShow].name);
 }
 
 void adjustSpeed(bool up) {
