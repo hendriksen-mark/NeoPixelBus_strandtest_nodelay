@@ -45,15 +45,19 @@ extern RgbColor Pink;
 extern RgbColor LightPink;
 extern RgbColor CornflowerBlue;
 extern RgbColor LightBlue;
-extern const uint8_t numEffects;
 
 // Function declarations
+// Effects
 void handleIrInput();
 void colorWipe();
 void rainbow();
 void rainbowCycle();
 void theaterChase();
 void theaterChaseRainbow();
+void twinkle();
+void confetti();
+void meteorRain();
+// Effects helpers
 RgbColor Wheel(byte);
 void setPattern(uint8_t);
 void adjustPattern(bool);
@@ -63,8 +67,5 @@ void setPower(uint8_t);
 void setAutoplay(uint8_t);
 void setBrightness(uint8_t);
 void setColor(RgbColor);
-void twinkle();
-void confetti();
-void meteorRain();
 
 #endif // DECLARATIONS_H
