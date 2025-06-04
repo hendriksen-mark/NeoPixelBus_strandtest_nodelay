@@ -57,6 +57,9 @@ void theaterChaseRainbow();
 void twinkle();
 void confetti();
 void meteorRain();
+void pulse();
+void sparkle();
+void letterHighlight();
 // Effects helpers
 RgbColor Wheel(byte);
 void setPattern(uint8_t);
